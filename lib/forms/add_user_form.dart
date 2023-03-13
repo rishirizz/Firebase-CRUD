@@ -165,9 +165,9 @@ class _AddUserFormState extends State<AddUserForm> {
         setState(() {
           isAPICallProcess = true;
         });
-        debugPrint(addUserRequestModel.toJson().toString());
-
         final docUser = FirebaseFirestore.instance.collection('users').doc();
+        addUserRequestModel.id = docUser.id;
+        debugPrint(addUserRequestModel.toJson().toString());
         await docUser.set(addUserRequestModel.toJson()).then((_) {
           setState(() {
             isAPICallProcess = false;
