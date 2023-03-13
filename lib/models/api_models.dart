@@ -2,13 +2,13 @@ class AddUserRequestModel {
   String? id;
   String? name;
   int? age;
-  DateTime? birthday;
+  String? city;
 
   AddUserRequestModel({
     this.id,
     this.name,
     this.age,
-    this.birthday,
+    this.city,
   });
 
   Map<String, dynamic> toJson() {
@@ -16,7 +16,7 @@ class AddUserRequestModel {
       'id': id?.trim(),
       'name': name?.trim(),
       'age': age,
-      'birthday': birthday,
+      'city': city?.trim(),
     };
     map.removeWhere((key, value) => value == null);
     return map;
