@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_crud/models/api_models.dart';
 import 'package:flutter/material.dart';
 
+import '../components/loading_ui_component.dart';
+
 class AddUserForm extends StatefulWidget {
   const AddUserForm({super.key});
   static const routeName = '/addUserForm';
@@ -25,8 +27,8 @@ class _AddUserFormState extends State<AddUserForm> {
           title: const Text('ADD USER'),
         ),
         body: (isAPICallProcess)
-            ? Center(
-                child: CircularProgressIndicator(),
+            ? const LoadingUIComponent(
+                message: 'Adding user...',
               )
             : GestureDetector(
                 onTap: () {
@@ -166,10 +168,16 @@ class _AddUserFormState extends State<AddUserForm> {
         debugPrint(addUserRequestModel.toJson().toString());
 
         final docUser = FirebaseFirestore.instance.collection('users').doc();
-        await docUser.set(addUserRequestModel.toJson()).then((value) {
+        await docUser.set(addUserRequestModel.toJson()).then((_) {
           setState(() {
             isAPICallProcess = false;
           });
+          Navigator.pop(context);
+          SnackBar snackBar = const SnackBar(
+            content: Text('User added successfully.'),
+          );
+          ScaffoldMessenger.of(scaffoldKey.currentContext!)
+              .showSnackBar(snackBar);
         });
 
         return true;
