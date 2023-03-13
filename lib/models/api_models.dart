@@ -21,4 +21,13 @@ class AddUserRequestModel {
     map.removeWhere((key, value) => value == null);
     return map;
   }
+
+  static fromJson(Map<String, dynamic> json) {
+    return AddUserRequestModel(
+        id: json['id'],
+        name: json['name'],
+        age: json['age'],
+        city: json['city'],
+      );
+  }
 }
