@@ -29,26 +29,27 @@ class _UsersPageState extends State<UsersPage> {
           'FIREBASE CRUD',
         ),
       ),
-      body: StreamBuilder<List<AddUserRequestModel>>(
+      body: StreamBuilder<QuerySnapshot>(
         stream: getAllUsers(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final List<AddUserRequestModel> users =
-                snapshot.data as List<AddUserRequestModel>;
-            return ListView(
-                children: users.map((user) {
-              return ListTile(
-                leading: CircleAvatar(child: Text('${user.age}')),
-                title: Text(user.name!),
-                subtitle: Text(user.city!),
-              );
-            }).toList());
-          } else if (snapshot.hasError) {
-            print(snapshot.error);
-            return const Center(child: Text('Something went wrong.'));
-          } else {
-            return const LoadingUIComponent(message: 'Loading Users...');
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return const Text('Something went wrong');
           }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const LoadingUIComponent(
+              message: 'Loading Users...',
+            );
+          }
+          return ListView(
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+            AddUserRequestModel user = AddUserRequestModel.fromJson(
+                document.data()! as Map<String, dynamic>);
+            return ListTile(
+              leading: CircleAvatar(child: Text('${user.age}')),
+              title: Text(user.name!),
+              subtitle: Text(user.city!),
+            );
+          }).toList());
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -61,12 +62,16 @@ class _UsersPageState extends State<UsersPage> {
     );
   }
 
-  Stream<List<AddUserRequestModel>> getAllUsers() {
-    return FirebaseFirestore.instance.collection('users').snapshots().map(
-        (snapshot) => snapshot.docs
-            .map<AddUserRequestModel>(
-                (doc) => AddUserRequestModel.fromJson(doc.data()))
-            .toList());
+  // Stream<List<AddUserRequestModel>> getAllUsers() {
+  //   return FirebaseFirestore.instance.collection('users').snapshots().map(
+  //       (snapshot) => snapshot.docs
+  //           .map<AddUserRequestModel>(
+  //               (doc) => AddUserRequestModel.fromJson(doc.data()))
+  //           .toList());
+  // }
+
+  Stream<QuerySnapshot> getAllUsers() {
+    return FirebaseFirestore.instance.collection('users').snapshots();
   }
 }
 
