@@ -35,16 +35,17 @@ class _UsersPageState extends State<UsersPage> {
           if (snapshot.hasError) {
             return const Text('Something went wrong');
           }
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading");
+          if (snapshot.hasData) {
+            return ListView(
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+              AddUserRequestModel data =
+                  document.data()! as AddUserRequestModel;
+              return ListTile(
+                title: Text(data.name!),
+              );
+            }).toList());
           }
-          return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            AddUserRequestModel data = document.data()! as AddUserRequestModel;
-            return ListTile(
-              title: Text(data.name!),
-            );
-          }).toList());
+          return const Text("Loading");
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
