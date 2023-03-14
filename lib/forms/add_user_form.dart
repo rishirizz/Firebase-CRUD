@@ -27,8 +27,10 @@ class _AddUserFormState extends State<AddUserForm> {
           title: const Text('ADD USER'),
         ),
         body: (isAPICallProcess)
-            ? const LoadingUIComponent(
-                message: 'Adding user...',
+            ? const Center(
+                child: LoadingUIComponent(
+                  message: 'Adding user...',
+                ),
               )
             : GestureDetector(
                 onTap: () {

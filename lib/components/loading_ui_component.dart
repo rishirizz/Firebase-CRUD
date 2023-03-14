@@ -9,15 +9,18 @@ class LoadingUIComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const CircularProgressIndicator(),
-        const SizedBox(
-          height: 20,
-        ),
-        Text(message),
-      ],
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(),
+          const SizedBox(
+            height: 20,
+          ),
+          Text(message),
+        ],
+      ),
     );
   }
 }

@@ -36,8 +36,10 @@ class _EditUserFormState extends State<EditUserForm> {
           title: const Text('UPDATE USER DETAILS'),
         ),
         body: (isAPICallProcess)
-            ? const LoadingUIComponent(
-                message: 'Updating user...',
+            ? const Center(
+                child: LoadingUIComponent(
+                  message: 'Updating user...',
+                ),
               )
             : GestureDetector(
                 onTap: () {
