@@ -3,6 +3,8 @@ import 'package:firebase_crud/pages/users_page.dart';
 import 'package:flutter/material.dart';
 
 import 'forms/add_user_form.dart';
+import 'forms/edit_user_form.dart';
+import 'models/api_models.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +25,9 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: (settings) {
         var routes = <String, WidgetBuilder>{
           AddUserForm.routeName: (BuildContext context) => const AddUserForm(),
+          EditUserForm.routeName: (BuildContext context) => EditUserForm(
+                userRequestModel: settings.arguments as UserRequestModel,
+              ),
         };
         WidgetBuilder builder = routes[settings.name]!;
         return MaterialPageRoute(

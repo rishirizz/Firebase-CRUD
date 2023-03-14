@@ -4,6 +4,7 @@ import 'package:firebase_crud/models/api_models.dart';
 import 'package:flutter/material.dart';
 
 import '../forms/add_user_form.dart';
+import '../forms/edit_user_form.dart';
 
 class UsersPage extends StatefulWidget {
   const UsersPage({super.key});
@@ -36,18 +37,29 @@ class _UsersPageState extends State<UsersPage> {
             return const Text('Something went wrong');
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const LoadingUIComponent(
-              message: 'Loading Users...',
+            return const Center(
+              child: LoadingUIComponent(
+                message: 'Loading Users...',
+              ),
             );
           }
           return ListView(
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
-            AddUserRequestModel user = AddUserRequestModel.fromJson(
+            UserRequestModel user = UserRequestModel.fromJson(
                 document.data()! as Map<String, dynamic>);
-            return ListTile(
-              leading: CircleAvatar(child: Text('${user.age}')),
-              title: Text(user.name!),
-              subtitle: Text(user.city!),
+            return InkWell(
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  EditUserForm.routeName,
+                  arguments: user,
+                );
+              },
+              child: ListTile(
+                leading: CircleAvatar(child: Text('${user.age}')),
+                title: Text(user.name!),
+                subtitle: Text(user.city!),
+              ),
             );
           }).toList());
         },

@@ -1,10 +1,10 @@
-class AddUserRequestModel {
+class UserRequestModel {
   String? id;
   String? name;
   int? age;
   String? city;
 
-  AddUserRequestModel({
+  UserRequestModel({
     this.id,
     this.name,
     this.age,
@@ -23,11 +23,11 @@ class AddUserRequestModel {
   }
 
   static fromJson(Map<String, dynamic> json) {
-    return AddUserRequestModel(
-        id: json['id'],
-        name: json['name'],
-        age: json['age'],
-        city: json['city'],
-      );
+    return UserRequestModel(
+      id: json['id'],
+      name: json['name'],
+      age: json['age'],
+      city: json['city'],
+    );
   }
 }

@@ -1,22 +1,30 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_crud/models/api_models.dart';
 import 'package:flutter/material.dart';
 
 import '../components/loading_ui_component.dart';
+import '../models/api_models.dart';
 
-class AddUserForm extends StatefulWidget {
-  const AddUserForm({super.key});
-  static const routeName = '/addUserForm';
+class EditUserForm extends StatefulWidget {
+  final UserRequestModel? userRequestModel;
+  const EditUserForm({required this.userRequestModel, super.key});
+  static const routeName = '/editUserForm';
 
   @override
-  State<AddUserForm> createState() => _AddUserFormState();
+  State<EditUserForm> createState() => _EditUserFormState();
 }
 
-class _AddUserFormState extends State<AddUserForm> {
+class _EditUserFormState extends State<EditUserForm> {
   UserRequestModel addUserRequestModel = UserRequestModel();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final formKey = GlobalKey<FormState>();
   bool isAPICallProcess = false;
+  UserRequestModel? user;
+
+  @override
+  void initState() {
+    super.initState();
+    user = widget.userRequestModel;
+    debugPrint(user.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +32,11 @@ class _AddUserFormState extends State<AddUserForm> {
       child: Scaffold(
         key: scaffoldKey,
         appBar: AppBar(
-          title: const Text('ADD USER'),
+          title: const Text('UPDATE USER DETAILS'),
         ),
         body: (isAPICallProcess)
             ? const LoadingUIComponent(
-                message: 'Adding user...',
+                message: 'Updating user...',
               )
             : GestureDetector(
                 onTap: () {
@@ -57,6 +65,7 @@ class _AddUserFormState extends State<AddUserForm> {
                                 TextFormField(
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
+                                  initialValue: user!.name!,
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     labelText: 'Name',
@@ -78,6 +87,7 @@ class _AddUserFormState extends State<AddUserForm> {
                                 TextFormField(
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
+                                  initialValue: user!.age!.toString(),
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     labelText: 'Age',
@@ -100,6 +110,7 @@ class _AddUserFormState extends State<AddUserForm> {
                                 TextFormField(
                                   autovalidateMode:
                                       AutovalidateMode.onUserInteraction,
+                                  initialValue: user!.city!,
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
                                     labelText: 'City',
@@ -140,7 +151,7 @@ class _AddUserFormState extends State<AddUserForm> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                _submitCommand();
+                                // _submitCommand();
                               },
                               child: const Text(
                                 'SAVE',
@@ -155,35 +166,5 @@ class _AddUserFormState extends State<AddUserForm> {
               ),
       ),
     );
-  }
-
-  Future<bool> _submitCommand() async {
-    final form = formKey.currentState;
-    if (form != null) {
-      if (form.validate()) {
-        form.save();
-        setState(() {
-          isAPICallProcess = true;
-        });
-        final docUser = FirebaseFirestore.instance.collection('users').doc();
-        addUserRequestModel.id = docUser.id;
-        debugPrint(addUserRequestModel.toJson().toString());
-        await docUser.set(addUserRequestModel.toJson()).then((_) {
-          setState(() {
-            isAPICallProcess = false;
-          });
-          Navigator.pop(context);
-          SnackBar snackBar = const SnackBar(
-            content: Text('User added successfully.'),
-          );
-          ScaffoldMessenger.of(scaffoldKey.currentContext!)
-              .showSnackBar(snackBar);
-        });
-
-        return true;
-      }
-    }
-    debugPrint('Form is null');
-    return false;
   }
 }
