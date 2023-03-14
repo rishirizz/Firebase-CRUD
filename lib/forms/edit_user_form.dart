@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../components/loading_ui_component.dart';
@@ -151,7 +152,7 @@ class _EditUserFormState extends State<EditUserForm> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                // _submitCommand();
+                                _submitCommand();
                               },
                               child: const Text(
                                 'SAVE',
@@ -166,5 +167,37 @@ class _EditUserFormState extends State<EditUserForm> {
               ),
       ),
     );
+  }
+
+  Future<bool> _submitCommand() async {
+    final form = formKey.currentState;
+    if (form != null) {
+      if (form.validate()) {
+        form.save();
+        setState(() {
+          isAPICallProcess = true;
+        });
+
+        final docUser = FirebaseFirestore.instance
+            .collection('users')
+            .doc(user!.id); //will update for that specific id
+        debugPrint(addUserRequestModel.toJson().toString());
+        await docUser.update(addUserRequestModel.toJson()).then((_) {
+          setState(() {
+            isAPICallProcess = false;
+          });
+          Navigator.pop(context);
+          SnackBar snackBar = const SnackBar(
+            content: Text('User updated successfully.'),
+          );
+          ScaffoldMessenger.of(scaffoldKey.currentContext!)
+              .showSnackBar(snackBar);
+        });
+
+        return true;
+      }
+    }
+    debugPrint('Form is null');
+    return false;
   }
 }
