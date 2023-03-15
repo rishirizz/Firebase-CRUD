@@ -59,6 +59,18 @@ class _UsersPageState extends State<UsersPage> {
                 leading: CircleAvatar(child: Text('${user.age}')),
                 title: Text(user.name!),
                 subtitle: Text(user.city!),
+                trailing: IconButton(
+                  onPressed: () {
+                    final docUser = FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user.id);
+                    docUser.delete();
+                  },
+                  icon: Icon(
+                    Icons.delete,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
               ),
             );
           }).toList());
